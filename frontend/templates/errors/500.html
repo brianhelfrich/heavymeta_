@@ -1,0 +1,35 @@
+<!-- heavymetal/frontend/templates/errors/500.html -->
+{% extends "base.html" %}
+{% block title %}Server Error — Heavy Metal{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center" style="min-height:64vh">
+  <div class="hm-card p-10 text-center" style="max-width:26rem">
+
+    <div class="mx-auto mb-6 flex items-center justify-center"
+         style="width:60px;height:60px;border-radius:16px;background:rgba(248,113,113,.12);color:#f87171">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <path d="M12 9v4M12 17h.01"/>
+      </svg>
+    </div>
+
+    <p class="text-5xl font-bold tracking-tight leading-none">500</p>
+    <h1 class="text-lg font-semibold mt-4">Something went wrong</h1>
+    <p class="text-sm mt-2" style="color:rgba(255,255,255,.4)">
+      The server hit an unexpected error. Try again in a moment — if it keeps
+      happening, the logs will have the details.
+    </p>
+
+    <a href="{{ url_for('dashboards.index') }}" class="btn-primary" style="margin-top:1.75rem">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Back to dashboard
+    </a>
+
+  </div>
+</div>
+{% endblock %}

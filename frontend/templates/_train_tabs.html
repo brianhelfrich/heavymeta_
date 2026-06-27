@@ -1,0 +1,22 @@
+<!-- heavymetal/frontend/templates/_train_tabs.html -->
+{# heavymetal/frontend/templates/_train_tabs.html
+   Sub-nav for the Train hub (Analytics / Workouts / Sessions), shared by the
+   training, workouts, and sessions pages so the three are mutually navigable.
+   Tab labels match the sidebar items and page titles (no Sessions/History split).
+   Usage: {% import "_train_tabs.html" as train %} … {{ train.tabs('workouts') }} #}
+{% macro tabs(active) %}
+<div class="flex gap-2 mb-8">
+  {% set items = [
+    ('analytics', 'Analytics', url_for('training.index')),
+    ('workouts', 'Workouts', url_for('workouts.index')),
+    ('sessions', 'Sessions', url_for('sessions.index')),
+  ] %}
+  {% for key, label, href in items %}
+    {% if key == active %}
+    <span class="px-3 py-1.5 text-sm font-medium rounded-lg" style="background:rgba(255,255,255,.09);color:#fff">{{ label }}</span>
+    {% else %}
+    <a href="{{ href }}" class="px-3 py-1.5 text-sm font-medium rounded-lg" style="color:rgba(255,255,255,.5)">{{ label }}</a>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endmacro %}

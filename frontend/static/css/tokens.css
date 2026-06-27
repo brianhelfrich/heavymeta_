@@ -1,0 +1,18 @@
+/* heavymetal/frontend/static/css/tokens.css */
+:root{
+  --bg:#fafafc; --bg-elev-1:rgba(255,255,255,.9); --bg-elev-2:rgba(255,255,255,.75);
+  --text:#0b0b0f; --text-sec:rgba(10,10,10,.62);
+  --accent:#0a84ff; --sep:rgba(60,60,67,.36); --ring:rgba(10,132,255,.45);
+  --radius-2xl:24px;
+  --shadow-1:0 8px 28px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.08);
+  --ease-spring:cubic-bezier(.2,.8,.2,1); --dur-1:.18s;
+}
+.dark:root{
+  --bg:rgba(17,17,20,.78); --bg-elev-1:rgba(28,28,32,.84); --bg-elev-2:rgba(40,40,46,.72);
+  --text:rgba(255,255,255,.92); --text-sec:rgba(255,255,255,.64);
+  --sep:rgba(84,84,88,.65); --ring:rgba(10,132,255,.5);
+  --shadow-1:0 10px 32px rgba(0,0,0,.45), 0 2px 10px rgba(0,0,0,.35);
+}
+html,body{height:100%}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}

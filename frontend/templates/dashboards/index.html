@@ -1,0 +1,306 @@
+<!-- heavymetal/frontend/templates/dashboards/index.html -->
+{# heavymetal/frontend/templates/dashboards/index.html #}
+{% extends "base.html" %}
+{% import "_cards.html" as ui %}
+{% block title %}Dashboard — Heavy Metal{% endblock %}
+
+{% block content %}
+
+{# ---- Page header ---- #}
+<div class="flex items-center justify-between mb-8">
+  <div>
+    <h1 class="text-2xl font-bold tracking-tight">Dashboard</h1>
+    <p class="text-sm mt-0.5" style="color:rgba(255,255,255,.35)">
+      {{ today.strftime("%A, %B %-d") }}
+    </p>
+  </div>
+  <a href="{{ url_for('log.index') }}" class="btn-primary">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+    Log Today
+  </a>
+</div>
+
+{# ---- Stat cards ---- #}
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
+
+  {# Bodyweight #}
+  <a href="{{ url_for('metrics.detail', key='weight') }}" class="hm-card p-5 block" style="color:inherit;text-decoration:none">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-xs font-semibold uppercase tracking-wider" style="color:rgba(255,255,255,.35)">Bodyweight</p>
+      {% if weight.stale %}
+        <span class="stat-pill-none text-[10px] font-semibold px-2 py-0.5 rounded-full">Stale</span>
+      {% elif weight.in_goal is none %}
+        <span class="stat-pill-none text-[10px] font-semibold px-2 py-0.5 rounded-full">—</span>
+      {% elif weight.in_goal %}
+        <span class="stat-pill-hit text-[10px] font-semibold px-2 py-0.5 rounded-full">On track</span>
+      {% else %}
+        <span class="stat-pill-miss text-[10px] font-semibold px-2 py-0.5 rounded-full">Off target</span>
+      {% endif %}
+    </div>
+    <p class="text-3xl font-bold tracking-tight leading-none">
+      {{ "%.1f"|format(weight.avg_7d) if weight.avg_7d else "—" }}
+      {% if weight.avg_7d %}<span class="text-base font-normal" style="color:rgba(255,255,255,.35)">lb</span>{% endif %}
+    </p>
+    <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.3)">
+      {% if weight.stale %}
+        As of {{ weight.label }}
+      {% elif weight.delta is not none %}
+        {% if weight.delta < 0 %}↓ {{ "%.1f"|format(weight.delta|abs) }} lb{% elif weight.delta > 0 %}↑ {{ "%.1f"|format(weight.delta) }} lb{% else %}No change{% endif %}
+        · 7d avg
+      {% else %}
+        Goal {{ targets.weight_low|int }}–{{ targets.weight_high|int }} lb
+      {% endif %}
+    </p>
+    {% if weight.spark %}
+    <div class="mt-3 opacity-50">{{ ui.spark(weight.spark, '#60a5fa') }}</div>
+    {% endif %}
+  </a>
+
+  {# Protein #}
+  <a href="{{ url_for('metrics.detail', key='protein') }}" class="hm-card p-5 block" style="color:inherit;text-decoration:none">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-xs font-semibold uppercase tracking-wider" style="color:rgba(255,255,255,.35)">Protein</p>
+      {% if cards.protein.value is none %}
+        <span class="stat-pill-none text-[10px] font-semibold px-2 py-0.5 rounded-full">No data</span>
+      {% elif cards.protein.stale %}
+        <span class="stat-pill-none text-[10px] font-semibold px-2 py-0.5 rounded-full">Stale</span>
+      {% elif cards.protein.hit %}
+        <span class="stat-pill-hit text-[10px] font-semibold px-2 py-0.5 rounded-full">Goal hit</span>
+      {% else %}
+        <span class="stat-pill-miss text-[10px] font-semibold px-2 py-0.5 rounded-full">Below target</span>
+      {% endif %}
+    </div>
+    <p class="text-3xl font-bold tracking-tight leading-none">
+      {{ cards.protein.value|int if cards.protein.value else "—" }}
+      {% if cards.protein.value %}<span class="text-base font-normal" style="color:rgba(255,255,255,.35)">g</span>{% endif %}
+    </p>
+    <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.3)">
+      {{ cards.protein.label or "—" }} · target {{ targets.protein_g|int }}g
+    </p>
+    {% if cards.protein.value and not cards.protein.stale %}
+    {# Progress bar vs target #}
+    <div class="mt-3">
+      {% set pct = [(cards.protein.value / targets.protein_g * 100)|int, 100]|min %}
+      <div class="h-1 rounded-full" style="background:rgba(255,255,255,.08)">
+        <div class="h-1 rounded-full transition-all" style="width:{{ pct }}%;background:{{ '#34d399' if cards.protein.hit else '#f87171' }}"></div>
+      </div>
+    </div>
+    {% endif %}
+  </a>
+
+  {# Steps #}
+  <a href="{{ url_for('metrics.detail', key='steps') }}" class="hm-card p-5 block" style="color:inherit;text-decoration:none">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-xs font-semibold uppercase tracking-wider" style="color:rgba(255,255,255,.35)">Steps</p>
+      {% if cards.steps.value is none %}
+        <span class="stat-pill-none text-[10px] font-semibold px-2 py-0.5 rounded-full">No data</span>
+      {% elif cards.steps.stale %}
+        <span class="stat-pill-none text-[10px] font-semibold px-2 py-0.5 rounded-full">Stale</span>
+      {% elif cards.steps.hit %}
+        <span class="stat-pill-hit text-[10px] font-semibold px-2 py-0.5 rounded-full">Goal hit</span>
+      {% else %}
+        <span class="stat-pill-miss text-[10px] font-semibold px-2 py-0.5 rounded-full">Below target</span>
+      {% endif %}
+    </div>
+    <p class="text-3xl font-bold tracking-tight leading-none">
+      {% if cards.steps.value is not none %}{{ "{:,.0f}".format(cards.steps.value) }}{% else %}—{% endif %}
+    </p>
+    <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.3)">
+      {{ cards.steps.label or "—" }} · target {{ "{:,}".format(targets.steps) }}
+    </p>
+    {% if cards.steps.spark %}
+    <div class="mt-3 opacity-50">{{ ui.spark(cards.steps.spark, '#a78bfa') }}</div>
+    {% endif %}
+  </a>
+
+  {# Sleep #}
+  <a href="{{ url_for('metrics.detail', key='sleep') }}" class="hm-card p-5 block" style="color:inherit;text-decoration:none">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-xs font-semibold uppercase tracking-wider" style="color:rgba(255,255,255,.35)">Sleep</p>
+      {% if cards.sleep.value is none %}
+        <span class="stat-pill-none text-[10px] font-semibold px-2 py-0.5 rounded-full">No data</span>
+      {% elif cards.sleep.stale %}
+        <span class="stat-pill-none text-[10px] font-semibold px-2 py-0.5 rounded-full">Stale</span>
+      {% elif cards.sleep.hit %}
+        <span class="stat-pill-hit text-[10px] font-semibold px-2 py-0.5 rounded-full">Goal hit</span>
+      {% else %}
+        <span class="stat-pill-miss text-[10px] font-semibold px-2 py-0.5 rounded-full">Below target</span>
+      {% endif %}
+    </div>
+    <p class="text-3xl font-bold tracking-tight leading-none">
+      {{ "%.1f"|format(cards.sleep.value) if cards.sleep.value is not none else "—" }}
+      {% if cards.sleep.value is not none %}<span class="text-base font-normal" style="color:rgba(255,255,255,.35)">h</span>{% endif %}
+    </p>
+    <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.3)">
+      {% if cards.sleep.label == "Today" %}Last night{% else %}{{ cards.sleep.label or "—" }}{% endif %} · target {{ "%.0f"|format(targets.sleep_hours) }}h
+    </p>
+    {% if cards.sleep.spark %}
+    <div class="mt-3 opacity-50">{{ ui.spark(cards.sleep.spark, '#818cf8') }}</div>
+    {% endif %}
+  </a>
+
+  {# Sessions #}
+  <div class="hm-card p-5">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-xs font-semibold uppercase tracking-wider" style="color:rgba(255,255,255,.35)">Sessions</p>
+      {% if sessions.hit %}
+        <span class="stat-pill-hit text-[10px] font-semibold px-2 py-0.5 rounded-full">Goal hit</span>
+      {% else %}
+        <span class="stat-pill-miss text-[10px] font-semibold px-2 py-0.5 rounded-full">
+          {{ sessions.target - sessions.count }} to go
+        </span>
+      {% endif %}
+    </div>
+    <p class="text-3xl font-bold tracking-tight leading-none">
+      {{ sessions.count }}
+      <span class="text-base font-normal" style="color:rgba(255,255,255,.35)">/ {{ sessions.target }}</span>
+    </p>
+    <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.3)">This week</p>
+    <div class="mt-3">
+      {% set pct = [(sessions.count / sessions.target * 100)|int, 100]|min %}
+      <div class="h-1 rounded-full" style="background:rgba(255,255,255,.08)">
+        <div class="h-1 rounded-full transition-all" style="width:{{ pct }}%;background:{{ '#34d399' if sessions.hit else '#60a5fa' }}"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{# ---- Charts ---- #}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+
+  {# Bodyweight trend — spans 2 cols #}
+  <div class="hm-card p-5 lg:col-span-2">
+    <div class="flex items-center justify-between mb-4">
+      <p class="text-sm font-semibold">Bodyweight</p>
+      <p class="text-xs" style="color:rgba(255,255,255,.3)">60 days · goal {{ targets.weight_low|int }}–{{ targets.weight_high|int }} lb</p>
+    </div>
+    <div style="position:relative;height:200px"><canvas id="bodyweightTrend"></canvas></div>
+  </div>
+
+  {# Sessions per week #}
+  <div class="hm-card p-5">
+    <div class="flex items-center justify-between mb-4">
+      <p class="text-sm font-semibold">Sessions / week</p>
+      <p class="text-xs" style="color:rgba(255,255,255,.3)">12 weeks</p>
+    </div>
+    <div style="position:relative;height:200px"><canvas id="sessionsPerWeek"></canvas></div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chart.umd.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chartjs-adapter-date-fns.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chartjs-plugin-annotation.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chartjs-plugin-zoom.min.js') }}"></script>
+<script nonce="{{ csp_nonce }}">window.__chartsData = {{ charts_data|safe }};</script>
+<script nonce="{{ csp_nonce }}">
+(function () {
+  const data = window.__chartsData || {};
+  const annPlugin = window['chartjs-plugin-annotation'];
+  if (annPlugin) Chart.register(annPlugin);
+  const zoomPlugin = window.ChartZoom || window['chartjs-plugin-zoom'];
+  if (zoomPlugin) Chart.register(zoomPlugin);
+
+  if (Chart.defaults.plugins.zoom) {
+    const z = Chart.defaults.plugins.zoom;
+    z.zoom.wheel.enabled = true;
+    z.zoom.mode = 'x';
+    z.pan.enabled = true;
+    z.pan.mode = 'x';
+  }
+  Chart.defaults.font.family = 'inherit';
+  Chart.defaults.color = 'rgba(255,255,255,.35)';
+  Chart.defaults.maintainAspectRatio = false;
+  Chart.defaults.animation = false;
+  Chart.defaults.plugins.legend.display = false;
+  Object.assign(Chart.defaults.plugins.tooltip, {
+    backgroundColor: '#27272a', borderColor: 'rgba(255,255,255,.10)',
+    borderWidth: 1, padding: 10, displayColors: false,
+  });
+
+  const GRID = 'rgba(255,255,255,.06)';
+  const TICK = { color: 'rgba(255,255,255,.35)', font: { size: 11 } };
+  const noGridX = { grid: { display: false }, border: { display: false }, ticks: { ...TICK, maxRotation: 0 } };
+  const timeX = { type: 'time', offset: true, time: { tooltipFormat: 'MMM d, yyyy' }, ...noGridX };
+  const yGrid = (extra) => Object.assign(
+    { grid: { color: GRID }, border: { display: false }, ticks: { ...TICK } }, extra || {});
+
+  function rgba(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+  }
+  function gradient(hex, alpha) {
+    return (c) => {
+      const area = c.chart.chartArea;
+      if (!area) return rgba(hex, alpha);
+      const g = c.chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
+      g.addColorStop(0, rgba(hex, alpha));
+      g.addColorStop(1, rgba(hex, 0));
+      return g;
+    };
+  }
+  // Bodyweight (area)
+  const bwEl = document.getElementById('bodyweightTrend');
+  if (bwEl && data.bodyweight_dates && data.bodyweight_dates.length) {
+    new Chart(bwEl, {
+      type: 'line',
+      data: { datasets: [{
+        label: 'Weight (lb)',
+        data: data.bodyweight_dates.map((d, i) => ({ x: d, y: data.bodyweight_values[i] })),
+        borderColor: '#60a5fa', borderWidth: 2, tension: 0.4,
+        fill: true, backgroundColor: gradient('#60a5fa', 0.15),
+        pointRadius: 0, pointHoverRadius: 4,
+        pointHoverBackgroundColor: '#60a5fa', pointHoverBorderColor: '#fafafa', pointHoverBorderWidth: 2,
+      }] },
+      options: {
+        scales: {
+          x: timeX,
+          y: yGrid({
+            min: Math.min(...data.bodyweight_values) - 2,
+            max: Math.max(...data.bodyweight_values) + 2,
+            ticks: { ...TICK, callback: (v) => v.toFixed(1) },
+          }),
+        },
+        plugins: {
+          tooltip: { callbacks: { label: (c) => ' ' + c.parsed.y.toFixed(1) + ' lb' } },
+          annotation: { annotations: { goal: {
+            type: 'box', yMin: data.target_weight_low, yMax: data.target_weight_high,
+            backgroundColor: 'rgba(52,211,153,.08)', borderWidth: 0,
+            label: { display: true, content: 'Goal', position: { x: 'end', y: 'start' },
+                     color: 'rgba(52,211,153,.6)', backgroundColor: 'rgba(0,0,0,0)', font: { size: 10 } } },
+          } },
+        },
+      },
+    });
+  }
+
+  // Sessions per week (bar, category)
+  const spwEl = document.getElementById('sessionsPerWeek');
+  if (spwEl) {
+    new Chart(spwEl, {
+      type: 'bar',
+      data: { labels: data.weekly_labels || [],
+        datasets: [{ label: 'Sessions', data: data.weekly_sessions || [],
+          backgroundColor: '#34d399', borderRadius: 4, maxBarThickness: 28 }] },
+      options: {
+        scales: {
+          x: { grid: { display: false }, border: { display: false }, ticks: { ...TICK } },
+          y: yGrid({ beginAtZero: true, ticks: { ...TICK, precision: 0 } }),
+        },
+        plugins: { tooltip: { callbacks: { label: (c) => ' ' + c.parsed.y + ' sessions' } } },
+      },
+    });
+  }
+
+  // scroll/drag to rescale the x-axis; double-click to reset (ApexCharts parity)
+  document.querySelectorAll('canvas').forEach((cv) => {
+    const ch = window.Chart.getChart(cv);
+    if (ch) cv.addEventListener('dblclick', () => ch.resetZoom());
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,39 @@
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.20
+    hooks:
+      - id: ruff
+      - id: ruff-format   # Ruff formatting; no Black
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-json
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy (type check, venv)
+        entry: venv/bin/mypy backend
+        language: system
+        files: ^backend/.*\.py$
+        pass_filenames: false
+
+      - id: ensure-filename-header
+        name: Ensure filename header
+        entry: python3 tools/ensure_filename_header.py
+        language: system
+        files: "\\.(py|html|js|css|sh)$"
+
+      - id: gate
+        name: Quality gate (migrations + pytest on fitnessdb_dev)
+        entry: bash bin/gate.sh commit
+        language: system
+        pass_filenames: false
+        always_run: true
+
+exclude: '(\._)|(\.bak$)|(\.DS_Store$)|(^frontend/static/js/.*\.min\.js$)'

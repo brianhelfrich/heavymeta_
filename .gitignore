@@ -1,0 +1,82 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual environment ────────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+
+# ── Environment & secrets ──────────────────────────────────────────────────────
+.env
+.env.*
+*.key
+*.crt
+*.pem
+certs/
+
+# ── Flask runtime ──────────────────────────────────────────────────────────────
+instance/
+backend/logs/
+*.log
+*.bak
+
+# ── Local database files ───────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Build tools (download via bin/setup.sh) ──────────────────────────────────
+bin/tailwindcss
+
+# ── Node / frontend tooling ────────────────────────────────────────────────────
+node_modules/
+.parcel-cache/
+.sass-cache/
+
+# ── Third-party vendored JS ──────────────────────────────────────────────────
+# Chart.js + plugins are committed (see frontend/static/js/chart*.js)
+frontend/static/rocket/dist/main.bundle.js
+
+# ── Generated / archived CSS ───────────────────────────────────────────────────
+frontend/static/css/_archive/
+frontend/static/css/output.css
+frontend/static/style.css
+frontend/static/rocket/assets/style.css
+
+# ── macOS metadata ─────────────────────────────────────────────────────────────
+.DS_Store
+._*
+.Spotlight-V7
+.Trashes
+backend/._*
+frontend/static/._*
+
+# ── Editor ─────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Linter / tool caches ──────────────────────────────────────────────────────
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── Claude Code session config (machine-local) ────────────────────────────────
+.claude/launch.json
+!.env.example
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+backups/

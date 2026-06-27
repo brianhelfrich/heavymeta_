@@ -1,0 +1,207 @@
+<!-- heavymetal/frontend/templates/log/form.html -->
+{# heavymetal/frontend/templates/log/form.html #}
+{% extends "base.html" %}
+{% block title %}Log Today — Heavy Metal{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto">
+
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold tracking-tight">Log Today</h1>
+    <p class="text-sm mt-0.5" style="color:rgba(255,255,255,.35)">Enter what you tracked today</p>
+  </div>
+
+  <form method="POST" action="{{ url_for('log.index') }}">
+
+    {# Date #}
+    <div class="hm-card p-5 mb-4">
+      <label class="form-label">Date</label>
+      <input type="date" name="date" value="{{ today }}" class="form-input" required />
+    </div>
+
+    {# Body & Nutrition #}
+    <div class="hm-card p-5 mb-4">
+      <p class="text-sm font-semibold mb-4">Body & Nutrition</p>
+
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div>
+          <label class="form-label">Bodyweight (lb)</label>
+          <input type="number" name="weight" step="0.1" min="100" max="400"
+                 placeholder="e.g. 200.5" class="form-input" />
+        </div>
+        <div>
+          <label class="form-label">Steps</label>
+          <input type="number" name="steps" step="1" min="0"
+                 placeholder="e.g. 8500" class="form-input" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div>
+          <label class="form-label">Sleep (hours)</label>
+          <input type="number" name="sleep" step="0.1" min="0" max="24"
+                 placeholder="e.g. 7.5" class="form-input" />
+        </div>
+        <div></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div>
+          <label class="form-label">Calories (kcal)</label>
+          <input type="number" name="calories" step="1" min="0"
+                 placeholder="e.g. 2200" class="form-input" />
+        </div>
+        <div>
+          <label class="form-label">Protein (g)</label>
+          <input type="number" name="protein" step="0.1" min="0"
+                 placeholder="e.g. 145" class="form-input" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="form-label">Carbs (g)</label>
+          <input type="number" name="carbs" step="0.1" min="0"
+                 placeholder="e.g. 220" class="form-input" />
+        </div>
+        <div>
+          <label class="form-label">Fat (g)</label>
+          <input type="number" name="fat" step="0.1" min="0"
+                 placeholder="e.g. 70" class="form-input" />
+        </div>
+      </div>
+    </div>
+
+    {# Workout session — optional #}
+    <div class="hm-card p-5 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <p class="text-sm font-semibold">Workout Session</p>
+        <span class="text-xs" style="color:rgba(255,255,255,.3)">Optional</span>
+      </div>
+
+      {# Plan selector #}
+      <label class="form-label">Which workout?</label>
+      <div class="grid grid-cols-2 gap-2 mb-4" id="plan-selector">
+        <label class="plan-btn">
+          <input type="radio" name="plan_id" value="" class="sr-only" checked id="plan-none" />
+          <span class="block text-center py-2.5 px-3 rounded-xl border cursor-pointer transition text-sm font-medium"
+                style="border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.4)"
+                id="plan-none-label">
+            None
+          </span>
+        </label>
+        {% for item in plans_with_exercises %}
+        <label class="plan-btn">
+          <input type="radio" name="plan_id" value="{{ item.plan.id }}"
+                 class="sr-only plan-radio" data-plan="{{ item.plan.id }}" />
+          <span class="block text-center py-2.5 px-3 rounded-xl border cursor-pointer transition text-sm font-medium"
+                style="border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.5)">
+            {{ item.plan.name }}
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+
+      {# Notes #}
+      <div id="session-fields" style="display:none">
+        <div class="mb-4">
+          <label class="form-label">Notes</label>
+          <input type="text" name="notes" placeholder="How did it feel?" class="form-input" />
+        </div>
+
+        {# Exercise set logging — one panel per plan #}
+        {% for item in plans_with_exercises %}
+        <div class="plan-exercises" data-plan="{{ item.plan.id }}" style="display:none">
+          <p class="text-xs font-semibold uppercase tracking-wider mb-3"
+             style="color:rgba(255,255,255,.35)">{{ item.plan.name }}</p>
+
+          {% if item.exercises %}
+            {% for row in item.exercises %}
+            {% set ex = row.exercise %}
+            {% set wpe = row.wpe %}
+            <div class="mb-5">
+              <p class="text-sm font-medium mb-2">{{ ex.name }}</p>
+              <p class="text-xs mb-2" style="color:rgba(255,255,255,.3)">
+                {{ wpe.sets }} sets
+                {% if wpe.reps_min and wpe.reps_max %} · {{ wpe.reps_min }}–{{ wpe.reps_max }} reps{% endif %}
+                {% if wpe.rest_seconds %} · {{ wpe.rest_seconds }}s rest{% endif %}
+              </p>
+              <div class="space-y-2">
+                {% for s in range(1, (wpe.sets or 3) + 1) %}
+                <div class="flex items-center gap-2">
+                  <span class="text-xs w-8 text-center shrink-0" style="color:rgba(255,255,255,.25)">S{{ s }}</span>
+                  <input type="number" name="set_weight_{{ ex.id }}_{{ s }}"
+                         step="2.5" min="0" placeholder="lb"
+                         class="form-input" style="padding:8px 10px;font-size:14px" />
+                  <span class="text-xs shrink-0" style="color:rgba(255,255,255,.25)">×</span>
+                  <input type="number" name="set_reps_{{ ex.id }}_{{ s }}"
+                         step="1" min="0" placeholder="reps"
+                         class="form-input" style="padding:8px 10px;font-size:14px" />
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-sm" style="color:rgba(255,255,255,.3)">No exercises configured for this plan.</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <button type="submit" class="btn-primary w-full justify-center" style="width:100%">
+      Save Entry
+    </button>
+
+  </form>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script nonce="{{ csp_nonce }}">
+(function () {
+  const radios = document.querySelectorAll('.plan-radio');
+  const noneRadio = document.getElementById('plan-none');
+  const sessionFields = document.getElementById('session-fields');
+  const allPanels = document.querySelectorAll('.plan-exercises');
+  const allLabels = document.querySelectorAll('.plan-btn span');
+
+  function selectPlan(planId) {
+    // Toggle session fields
+    sessionFields.style.display = planId ? 'block' : 'none';
+
+    // Show correct exercise panel
+    allPanels.forEach(p => {
+      p.style.display = (p.dataset.plan == planId) ? 'block' : 'none';
+    });
+
+    // Highlight selected radio label
+    allLabels.forEach(lbl => {
+      lbl.style.borderColor = 'rgba(255,255,255,.1)';
+      lbl.style.color = 'rgba(255,255,255,.4)';
+      lbl.style.background = 'transparent';
+    });
+    if (planId) {
+      const checked = document.querySelector(`.plan-radio[data-plan="${planId}"]`);
+      if (checked) {
+        const lbl = checked.parentElement.querySelector('span');
+        lbl.style.borderColor = '#0a84ff';
+        lbl.style.color = '#fff';
+        lbl.style.background = 'rgba(10,132,255,.12)';
+      }
+    }
+  }
+
+  radios.forEach(r => r.addEventListener('change', () => selectPlan(r.dataset.plan)));
+  noneRadio.addEventListener('change', () => selectPlan(''));
+
+  // Init
+  selectPlan('');
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+# heavymetal/ruff.toml
+target-version = "py314"
+line-length = 88
+
+[lint]
+# Ruff's defaults are only E4/E7/E9 + F. Add the high-value families:
+#   I  = import sorting (isort)
+#   B  = flake8-bugbear (real bug catchers: mutable defaults, etc.)
+#   C4 = flake8-comprehensions
+#   SIM= flake8-simplify
+#   UP = pyupgrade (modernize syntax for the target version)
+# Line length stays owned by `ruff format` (E4/E7/E9 omits E501).
+select = ["E4", "E7", "E9", "F", "I", "B", "C4", "SIM", "UP"]

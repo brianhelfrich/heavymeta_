@@ -1,0 +1,141 @@
+/* heavymetal/frontend/static/css/style.css */
+
+/* Tailwind v4 entry (keep at the top) */
+@import "tailwindcss";
+
+/* ---------------------------------------
+   Global base + link colors (light/dark)
+----------------------------------------*/
+body { color: #111827; }                 /* gray-900 */
+html.dark body { color: #f3f4f6; }       /* gray-100 */
+
+a { color: #2563eb; text-decoration: underline; }          /* blue-600 */
+a:hover { color: #1e40af; }                                 /* blue-800 */
+html.dark a { color: #60a5fa; }                             /* blue-400 */
+html.dark a:hover { color: #93c5fd; }                       /* blue-300 */
+
+/* Header / Footer */
+header, footer { background-color: #ffffff; }
+html.dark header, html.dark footer { background-color: #1f2937; }  /* gray-800 */
+html.dark header a, html.dark footer a { color: #60a5fa; }          /* blue-400 */
+
+/* ---------------------------------------
+   Headings: ensure strong contrast
+----------------------------------------*/
+h1, h2, h3, h4, h5, h6 { color: #111827; }         /* gray-900 light */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 { color: #f9fafb; }                  /* gray-50 dark */
+
+/* Card shells (your .card wrappers) */
+.card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;                      /* gray-200 */
+  border-radius: 0.5rem;
+}
+html.dark .card {
+  background-color: #111827;                      /* gray-900 */
+  border-color: #374151;                           /* gray-700 */
+}
+.card h2, .card .card-title { color: #111827; }
+html.dark .card h2,
+html.dark .card .card-title { color: #f3f4f6; }   /* gray-100 */
+
+/* ---------------------------------------
+   Tables: header, rows, borders, hover
+----------------------------------------*/
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  background-color: #f3f4f6;                      /* gray-100 */
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;               /* gray-200 */
+}
+tbody td { border-top: 1px solid #e5e7eb; }
+tr:hover { background-color: #f9fafb; }           /* subtle hover */
+
+html.dark thead th {
+  background-color: #374151;                      /* gray-700 */
+  color: #f3f4f6;                                 /* gray-100 */
+  border-bottom-color: #4b5563;                   /* gray-600 */
+}
+html.dark tbody td { border-top-color: #374151; } /* gray-700 */
+html.dark tr:hover { background-color: #1f2937; } /* gray-800 */
+
+/* ---------------------------------------
+   Buttons (generic + primary)
+   Apply to <a> or <button> as needed
+----------------------------------------*/
+.btn {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.btn-primary {
+  background-color: #2563eb;                      /* blue-600 */
+  color: #ffffff;
+}
+.btn-primary:hover { background-color: #1d4ed8; } /* blue-700 */
+
+html.dark .btn-primary {
+  background-color: #1d4ed8;                      /* blue-700 */
+  color: #ffffff;
+}
+html.dark .btn-primary:hover { background-color: #1e40af; } /* blue-800 */
+
+/* Secondary/ghost buttons */
+.btn-ghost {
+  background-color: transparent;
+  color: #2563eb;
+}
+.btn-ghost:hover {
+  background-color: #f3f4f6;                      /* gray-100 */
+}
+html.dark .btn-ghost { color: #93c5fd; }          /* blue-300 */
+html.dark .btn-ghost:hover { background-color: #1f2937; } /* gray-800 */
+
+/* ---------------------------------------
+   Forms (inputs/selects/textarea)
+----------------------------------------*/
+input, select, textarea {
+  background-color: #ffffff;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+}
+input::placeholder, textarea::placeholder { color: #9ca3af; } /* gray-400 */
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #111827;                      /* gray-900 */
+  color: #f3f4f6;                                 /* gray-100 */
+  border-color: #374151;                           /* gray-700 */
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder { color: #9ca3af; } /* gray-400 */
+
+/* ---------------------------------------
+   Utility nudges
+   (Breadcrumbs, muted text, small labels)
+----------------------------------------*/
+.muted, .text-muted { color: #6b7280; }           /* gray-500 */
+html.dark .muted,
+html.dark .text-muted { color: #9ca3af; }         /* gray-400 */
+
+.badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  background-color: #eef2ff;                      /* indigo-50 */
+  color: #3730a3;                                 /* indigo-800 */
+}
+html.dark .badge {
+  background-color: #312e81;                      /* indigo-900 */
+  color: #e0e7ff;                                 /* indigo-100 */
+}

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# heavymetal/deploy/post-commit — git hook: auto-deploy the just-committed snapshot.
+#
+# Install once, from the repo root:
+#   ln -sf ../../deploy/post-commit .git/hooks/post-commit
+#
+# Runs detached so `git commit` returns immediately; the deploy proceeds async
+# and is logged to backend/logs/gate/latest.log. reload.sh's branch + dirty-tree
+# guards mean only a clean, committed snapshot on main is ever promoted: this hook
+# fires on every commit, but reload.sh no-ops unless HEAD is main — so you can
+# commit on a feature branch to validate locally without deploying. The env -u
+# keeps the hook's GIT_* vars from leaking into reload.sh's own git calls.
+setsid env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE \
+  bash /home/brian/projects/heavymetal/deploy/reload.sh >/dev/null 2>&1 </dev/null &

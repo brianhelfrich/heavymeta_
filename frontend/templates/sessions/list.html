@@ -1,0 +1,50 @@
+<!-- heavymetal/frontend/templates/sessions/list.html -->
+{% extends "base.html" %}
+{% import "_train_tabs.html" as train %}
+{% block title %}Sessions — Heavy Metal{% endblock %}
+
+{% block content %}
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-bold tracking-tight">Sessions</h1>
+    <p class="text-sm mt-0.5" style="color:rgba(255,255,255,.35)">Your workout history</p>
+  </div>
+  <a href="{{ url_for('log.index') }}" class="btn-primary">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+    Log Session
+  </a>
+</div>
+
+{{ train.tabs('sessions') }}
+
+{% if sessions %}
+<div class="space-y-2">
+  {% for session in sessions %}
+  <a href="{{ url_for('sessions.detail_session', id=session.id) }}"
+     class="hm-card p-4 flex items-center justify-between group"
+     style="text-decoration:none;display:flex">
+    <div>
+      <p class="font-semibold text-white text-sm">
+        {{ session.session_date.strftime("%A, %B %-d, %Y") }}
+      </p>
+      {% if session.notes %}
+      <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.4)">{{ session.notes }}</p>
+      {% endif %}
+    </div>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" style="color:rgba(255,255,255,.2);flex-shrink:0">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="hm-card p-10 text-center">
+  <p class="text-sm font-medium" style="color:rgba(255,255,255,.4)">No sessions logged yet.</p>
+  <p class="text-xs mt-1" style="color:rgba(255,255,255,.25)">Use Log Today to record your first workout.</p>
+  <a href="{{ url_for('log.index') }}" class="btn-primary inline-flex mt-5">Log your first session</a>
+</div>
+{% endif %}
+
+{% endblock %}

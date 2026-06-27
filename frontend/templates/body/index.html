@@ -1,0 +1,36 @@
+<!-- heavymetal/frontend/templates/body/index.html -->
+{# heavymetal/frontend/templates/body/index.html #}
+{% extends "base.html" %}
+{% import "_cards.html" as ui %}
+{% block title %}Body — Heavy Metal{% endblock %}
+
+{% block content %}
+
+{# ---- Page header ---- #}
+<div class="mb-8">
+  <h1 class="text-2xl font-bold tracking-tight">Body</h1>
+  <p class="text-sm mt-0.5" style="color:rgba(255,255,255,.35)">
+    Composition &amp; recovery — trends vs your personal baseline
+  </p>
+</div>
+
+{# Each row holds three cards left-aligned in the 5-wide grid (positions 1–3),
+   leaving positions 4 and 5 empty — aligned under the left-aligned headers. #}
+
+{# ---- Body composition ---- #}
+<h2 class="text-sm font-semibold mb-3" style="color:rgba(255,255,255,.55)">Body Composition</h2>
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
+  {{ ui.recovery_card('Body Fat', bodycomp.body_fat_percent, '%', '#fbbf24', 'body_fat_percent', 1) }}
+  {{ ui.recovery_card('Lean Mass', bodycomp.lean_body_mass, 'lb', '#34d399', 'lean_body_mass', 1) }}
+  {{ ui.recovery_card('BMI', bodycomp.bmi, '', '#94a3b8', 'bmi', 1) }}
+</div>
+
+{# ---- Recovery & activity (Apple Watch) ---- #}
+<h2 class="text-sm font-semibold mb-3" style="color:rgba(255,255,255,.55)">Recovery &amp; Activity</h2>
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
+  {{ ui.recovery_card('Resting HR', recovery.resting_hr, 'bpm', '#fb7185', 'resting_hr') }}
+  {{ ui.recovery_card('HRV', recovery.hrv_sdnn, 'ms', '#2dd4bf', 'hrv_sdnn') }}
+  {{ ui.recovery_card('Stand Hours', recovery.stand_hours, 'hrs', '#38bdf8', 'stand_hours') }}
+</div>
+
+{% endblock %}

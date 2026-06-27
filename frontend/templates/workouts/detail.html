@@ -1,0 +1,70 @@
+<!-- heavymetal/frontend/templates/workouts/detail.html -->
+{% extends "base.html" %}
+{% block title %}{{ parent_plan.name }} — Heavy Metal{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+  <a href="{{ url_for('workouts.index') }}"
+     class="text-xs mb-3 inline-flex items-center gap-1"
+     style="color:rgba(255,255,255,.35);text-decoration:none">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    Workouts
+  </a>
+  <h1 class="text-2xl font-bold tracking-tight mt-1">{{ parent_plan.name }}</h1>
+  {% if parent_plan.description %}
+  <p class="text-sm mt-1" style="color:rgba(255,255,255,.4)">{{ parent_plan.description }}</p>
+  {% endif %}
+</div>
+
+{% for child in plan_data %}
+<div class="hm-card mb-4 overflow-hidden">
+  <div class="px-5 py-4 border-b" style="border-color:rgba(255,255,255,.06)">
+    <p class="font-semibold">{{ child.plan.name }}</p>
+  </div>
+
+  {% if child.exercises %}
+  <div class="overflow-x-auto">
+    <table style="width:100%;border-collapse:collapse">
+      <thead>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.06)">
+          <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+              style="color:rgba(255,255,255,.3)">Exercise</th>
+          <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider"
+              style="color:rgba(255,255,255,.3)">Sets</th>
+          <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider"
+              style="color:rgba(255,255,255,.3)">Reps</th>
+          <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider"
+              style="color:rgba(255,255,255,.3)">Rest</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider"
+              style="color:rgba(255,255,255,.3)">Category</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ex in child.exercises %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+          <td class="px-5 py-3 text-sm font-medium text-white">{{ ex.name }}</td>
+          <td class="px-4 py-3 text-sm text-center" style="color:rgba(255,255,255,.6)">{{ ex.sets }}</td>
+          <td class="px-4 py-3 text-sm text-center" style="color:rgba(255,255,255,.6)">
+            {% if ex.reps_min and ex.reps_max %}{{ ex.reps_min }}–{{ ex.reps_max }}{% else %}—{% endif %}
+          </td>
+          <td class="px-4 py-3 text-sm text-center" style="color:rgba(255,255,255,.6)">
+            {% if ex.rest %}{{ ex.rest }}s{% else %}—{% endif %}
+          </td>
+          <td class="px-4 py-3 text-xs" style="color:rgba(255,255,255,.35)">
+            {{ ex.category or '—' }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="px-5 py-4 text-sm" style="color:rgba(255,255,255,.3)">No exercises configured.</p>
+  {% endif %}
+</div>
+{% else %}
+<p class="text-sm" style="color:rgba(255,255,255,.35)">No day plans found.</p>
+{% endfor %}
+
+{% endblock %}

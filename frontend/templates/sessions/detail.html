@@ -1,0 +1,67 @@
+<!-- heavymetal/frontend/templates/sessions/detail.html -->
+{% extends "base.html" %}
+{% block title %}Session {{ session.session_date.strftime("%b %-d") }} — Heavy Metal{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+  <a href="{{ url_for('sessions.index') }}"
+     class="text-xs mb-3 inline-flex items-center gap-1"
+     style="color:rgba(255,255,255,.35);text-decoration:none">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    Sessions
+  </a>
+  <h1 class="text-2xl font-bold tracking-tight mt-1">
+    {{ session.session_date.strftime("%A, %B %-d, %Y") }}
+  </h1>
+  {% if plan %}
+  <p class="text-sm mt-0.5" style="color:rgba(255,255,255,.4)">{{ plan.name }}</p>
+  {% endif %}
+  {% if session.notes %}
+  <p class="text-sm mt-2" style="color:rgba(255,255,255,.5)">{{ session.notes }}</p>
+  {% endif %}
+</div>
+
+{% if exercises %}
+  {% for exercise_name, sets in exercises.items() %}
+  <div class="hm-card mb-4 overflow-hidden">
+    <div class="px-5 py-4 border-b" style="border-color:rgba(255,255,255,.06)">
+      <p class="font-semibold text-sm">{{ exercise_name }}</p>
+    </div>
+    <table style="width:100%;border-collapse:collapse">
+      <thead>
+        <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+          <th class="px-5 py-2.5 text-left text-xs font-semibold uppercase tracking-wider"
+              style="color:rgba(255,255,255,.3)">Set</th>
+          <th class="px-4 py-2.5 text-center text-xs font-semibold uppercase tracking-wider"
+              style="color:rgba(255,255,255,.3)">Weight</th>
+          <th class="px-4 py-2.5 text-center text-xs font-semibold uppercase tracking-wider"
+              style="color:rgba(255,255,255,.3)">Reps</th>
+          <th class="px-4 py-2.5 text-center text-xs font-semibold uppercase tracking-wider"
+              style="color:rgba(255,255,255,.3)">Volume</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ws in sets %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,.03)">
+          <td class="px-5 py-2.5 text-sm" style="color:rgba(255,255,255,.4)">{{ ws.set_number }}</td>
+          <td class="px-4 py-2.5 text-sm text-center font-medium text-white">
+            {{ ws.weight }} <span style="color:rgba(255,255,255,.35);font-weight:400">lb</span>
+          </td>
+          <td class="px-4 py-2.5 text-sm text-center" style="color:rgba(255,255,255,.7)">{{ ws.reps }}</td>
+          <td class="px-4 py-2.5 text-sm text-center" style="color:rgba(255,255,255,.4)">
+            {{ (ws.weight * ws.reps)|int }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+{% else %}
+<div class="hm-card p-8 text-center">
+  <p class="text-sm" style="color:rgba(255,255,255,.4)">No sets recorded for this session.</p>
+</div>
+{% endif %}
+
+{% endblock %}

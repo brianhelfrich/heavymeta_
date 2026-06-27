@@ -1,0 +1,87 @@
+<!-- heavymetal/frontend/templates/imports/form.html -->
+{# heavymetal/frontend/templates/imports/form.html #}
+{% extends "base.html" %}
+{% block title %}Import — Heavy Metal{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto">
+
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold tracking-tight">Import Data</h1>
+    <p class="text-sm mt-0.5" style="color:rgba(255,255,255,.35)">
+      Upload a Health Auto Export CSV to bulk-load measurements
+    </p>
+  </div>
+
+  <form method="POST" action="{{ url_for('imports.index') }}" enctype="multipart/form-data">
+
+    <div class="hm-card p-5 mb-4">
+      <label class="form-label">Health Auto Export CSV</label>
+      <input type="file" name="csv_file" accept=".csv"
+             class="form-input"
+             style="padding:10px 12px; cursor:pointer" required />
+      <p class="text-xs mt-3" style="color:rgba(255,255,255,.3)">
+        Recognized columns: weight, body fat, sleep, steps, protein, dietary &amp;
+        active energy, carbohydrates, total fat. Existing dates are updated in place.
+      </p>
+    </div>
+
+    <button type="submit" class="btn-primary w-full justify-center" style="width:100%">
+      Import CSV
+    </button>
+
+  </form>
+
+  <div class="hm-card p-5 mt-4 flex items-center justify-between">
+    <div>
+      <p class="text-sm font-semibold">Strong workouts</p>
+      <p class="text-xs mt-0.5" style="color:rgba(255,255,255,.3)">Import sets &amp; reps from a Strong app export</p>
+    </div>
+    <a href="{{ url_for('strong.index') }}" class="btn-ghost">Import workouts →</a>
+  </div>
+
+  {% if summary and not summary.error %}
+  <div class="hm-card p-5 mt-6">
+    <p class="text-sm font-semibold mb-4">Import summary</p>
+
+    <div class="grid grid-cols-3 gap-3 mb-5">
+      <div class="text-center">
+        <p class="text-2xl font-bold leading-none" style="color:#34d399">{{ summary.added }}</p>
+        <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.35)">Added</p>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-bold leading-none" style="color:#60a5fa">{{ summary.updated }}</p>
+        <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.35)">Updated</p>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-bold leading-none" style="color:rgba(255,255,255,.5)">{{ summary.rows }}</p>
+        <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.35)">Rows read</p>
+      </div>
+    </div>
+
+    {% if summary.columns_mapped %}
+    <p class="text-xs mb-1" style="color:rgba(255,255,255,.35)">Imported metrics</p>
+    <p class="text-sm mb-3">{{ summary.columns_mapped | join(", ") }}</p>
+    {% endif %}
+
+    {% if summary.columns_ignored %}
+    <p class="text-xs mb-1" style="color:rgba(255,255,255,.35)">Ignored columns</p>
+    <p class="text-sm mb-3" style="color:rgba(255,255,255,.45)">{{ summary.columns_ignored | join(", ") }}</p>
+    {% endif %}
+
+    {% if summary.bad_dates or summary.skipped_rows or summary.rejected %}
+    <p class="text-xs" style="color:rgba(255,255,255,.3)">
+      {{ summary.bad_dates }} rows skipped (unparseable date),
+      {{ summary.skipped_rows }} rows with no usable values{% if summary.rejected %},
+      {{ summary.rejected }} values rejected (out of plausible range){% endif %}.
+    </p>
+    {% endif %}
+
+    <a href="{{ url_for('dashboards.index') }}" class="btn-ghost mt-4 inline-flex">View dashboard →</a>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

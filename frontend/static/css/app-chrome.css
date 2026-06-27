@@ -1,0 +1,28 @@
+/* heavymetal/frontend/static/css/app-chrome.css */
+
+/* Shell */
+.ui2 .window{backdrop-filter:saturate(150%) blur(24px);background:var(--bg);height:100dvh;display:grid;grid-template-rows:auto 1fr}
+.ui2 .titlebar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--sep);-webkit-app-region:drag}
+.ui2 .traffic{display:inline-flex;gap:8px;-webkit-app-region:no-drag}
+.ui2 .traffic .dot{width:12px;height:12px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.ui2 .traffic .red{background:#ff5f57}.ui2 .traffic .yellow{background:#ffbd2e}.ui2 .traffic .green{background:#28c840}
+.ui2 .toolbar{display:flex;gap:10px;align-items:center;padding:6px 8px;border-radius:12px;background:var(--bg-elev-2);border:1px solid var(--sep);-webkit-app-region:no-drag}
+.ui2 .layout{display:grid;grid-template-columns:260px 1fr;height:calc(100dvh - 56px)}
+.ui2 .sidebar{background:var(--bg-elev-1);border-right:1px solid var(--sep);padding:14px}
+.ui2 .content{padding:18px;overflow:auto}
+
+/* Components */
+.ui2 .navlink{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;color:var(--text-sec);text-decoration:none;transition:.18s}
+.ui2 .navlink:hover{background:rgba(127,127,127,.12);color:var(--text)}
+.ui2 .navlink[aria-current="page"]{background:rgba(10,132,255,.15);border:1px solid rgba(10,132,255,.35);color:var(--text)}
+.ui2 .card{border:1px solid var(--sep);background:var(--bg-elev-1);border-radius:var(--radius-2xl);box-shadow:var(--shadow-1);overflow:clip}
+.ui2 .card-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--sep)}
+.ui2 .card-bd{padding:16px;color:var(--text-sec)}
+.ui2 .btn{border:1px solid var(--sep);background:var(--bg-elev-2);color:var(--text);border-radius:12px;padding:8px 12px;cursor:pointer;transition:transform var(--dur-1) var(--ease-spring),filter var(--dur-1)}
+.ui2 .btn:hover{transform:translateY(-1px);filter:saturate(1.1)}
+.ui2 .btn.primary{background:linear-gradient(180deg,#2ca2ff,#0a84ff);color:#fff;border:none}
+
+/* Scrollbar polish */
+.ui2 ::-webkit-scrollbar{width:11px;height:11px}
+.ui2 ::-webkit-scrollbar-thumb{background:rgba(127,127,127,.35);border-radius:10px;border:3px solid transparent;background-clip:padding-box}
+.ui2 ::-webkit-scrollbar-thumb:hover{background:rgba(127,127,127,.55)}

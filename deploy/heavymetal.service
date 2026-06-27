@@ -1,0 +1,28 @@
+[Unit]
+Description=Heavy Metal fitness dashboard (Flask, HTTPS on :5000)
+Documentation=https://github.com/brianhelfrich/heavymetal
+After=network-online.target
+Wants=network-online.target
+# Disable systemd's start-rate limiter entirely. This service is always-on
+# (Restart=always) and is legitimately restarted in bursts by the auto-reload
+# watcher (heavymetal-watch) during edit-heavy sessions. A finite StartLimitBurst
+# trips on those bursts and latches the service into a permanent
+# `failed (start-limit-hit)` state until a manual `reset-failed` — which is how
+# the site went down on 2026-06-25. Interval=0 turns the limiter off, so
+# Restart=always is truly always-on (and it still tolerates boot-time crash
+# loops, e.g. before Postgres is reachable). reload.sh also runs `reset-failed`
+# before each restart as a second, independent layer of defense.
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/home/brian/projects/heavymetal
+# Force debug/reloader OFF for the always-on service (port 5000 is LAN-exposed).
+# run.py still reads FLASK_DEBUG; this overrides the FLASK_DEBUG=1 in .env.
+Environment=FLASK_DEBUG=0
+ExecStart=/home/brian/projects/heavymetal/venv/bin/python /home/brian/projects/heavymetal/run.py
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target

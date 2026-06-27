@@ -1,0 +1,17 @@
+[Unit]
+Description=Heavy Metal auto-reload watcher (rebuilds CSS + restarts app on source changes)
+After=heavymetal.service
+Wants=heavymetal.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/brian/projects/heavymetal
+# Watch backend/ and frontend/ for *.py/*.html/*.css edits; debounce with
+# --wait (finish the restart before handling more) + --drop (discard events
+# that arrive mid-restart). output.css is excluded so the rebuild can't loop.
+ExecStart=/home/brian/projects/heavymetal/venv/bin/watchmedo shell-command --patterns=*.py;*.html;*.css --ignore-patterns=*output.css;*__pycache__* --recursive --wait --drop "--command=bash /home/brian/projects/heavymetal/deploy/reload.sh" backend frontend
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

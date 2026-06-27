@@ -1,0 +1,73 @@
+<!-- heavymetal/frontend/templates/strong/form.html -->
+{# heavymetal/frontend/templates/strong/form.html #}
+{% extends "base.html" %}
+{% block title %}Import Workouts — Heavy Metal{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto">
+
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold tracking-tight">Import Workouts</h1>
+    <p class="text-sm mt-0.5" style="color:rgba(255,255,255,.35)">
+      Upload a Strong app CSV export to load your workout history
+    </p>
+  </div>
+
+  <form method="POST" action="{{ url_for('strong.index') }}" enctype="multipart/form-data">
+    <div class="hm-card p-5 mb-4">
+      <label class="form-label">Strong CSV export</label>
+      <input type="file" name="csv_file" accept=".csv"
+             class="form-input" style="padding:10px 12px; cursor:pointer" required />
+      <p class="text-xs mt-3" style="color:rgba(255,255,255,.3)">
+        In Strong: Profile → Settings → Export Data. Each workout becomes a
+        session with its sets. Re-importing is safe — workouts already loaded
+        are skipped. Dumbbell lifts are stored as total load (Strong's
+        per-dumbbell weight ×2); name single-dumbbell lifts differently
+        (e.g. "Kettlebell …") to keep them as-is.
+      </p>
+    </div>
+    <button type="submit" class="btn-primary w-full justify-center" style="width:100%">
+      Import Workouts
+    </button>
+  </form>
+
+  {% if summary and not summary.error %}
+  <div class="hm-card p-5 mt-6">
+    <p class="text-sm font-semibold mb-4">Import summary</p>
+    <div class="grid grid-cols-3 gap-3 mb-5">
+      <div class="text-center">
+        <p class="text-2xl font-bold leading-none" style="color:#34d399">{{ summary.workouts_added }}</p>
+        <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.35)">Workouts</p>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-bold leading-none" style="color:#60a5fa">{{ summary.sets_added }}</p>
+        <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.35)">Sets</p>
+      </div>
+      <div class="text-center">
+        <p class="text-2xl font-bold leading-none" style="color:rgba(255,255,255,.5)">{{ summary.workouts_skipped }}</p>
+        <p class="text-xs mt-1.5" style="color:rgba(255,255,255,.35)">Skipped</p>
+      </div>
+    </div>
+
+    {% if summary.plans_created %}
+    <p class="text-xs mb-1" style="color:rgba(255,255,255,.35)">New plans created</p>
+    <p class="text-sm mb-3">{{ summary.plans_created | join(", ") }}</p>
+    {% endif %}
+
+    {% if summary.exercises_created %}
+    <p class="text-xs mb-1" style="color:rgba(255,255,255,.35)">New exercises added ({{ summary.exercises_created | length }})</p>
+    <p class="text-sm mb-3" style="color:rgba(255,255,255,.55)">{{ summary.exercises_created | join(", ") }}</p>
+    {% endif %}
+
+    {% if summary.bad_dates %}
+    <p class="text-xs" style="color:rgba(255,255,255,.3)">{{ summary.bad_dates }} workouts skipped (unparseable date).</p>
+    {% endif %}
+
+    <a href="{{ url_for('sessions.index') }}" class="btn-ghost mt-4 inline-flex">View sessions →</a>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

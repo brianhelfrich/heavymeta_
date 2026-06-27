@@ -1,0 +1,24 @@
+<!-- /heavymetal/frontend/static/safari-pinned-tab.svg -->
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Black = transparent; White = the masked (filled) shape in Safari -->
+  <!-- Background -->
+  <rect width="512" height="512" fill="black"/>
+
+  <!-- Outer rim (ring) -->
+  <circle cx="256" cy="256" r="236" fill="white"/>
+  <circle cx="256" cy="256" r="180" fill="black"/>
+
+  <!-- Inner accent ring (thin) -->
+  <circle cx="256" cy="256" r="130" fill="white"/>
+  <circle cx="256" cy="256" r="118" fill="black"/>
+
+  <!-- Spokes: two rotated bars to form an X -->
+  <!-- Spoke thickness/length tuned for small favicon sizes -->
+  <rect x="236" y="96" width="40" height="320" fill="white" transform="rotate(45 256 256)"/>
+  <rect x="236" y="96" width="40" height="320" fill="white" transform="rotate(-45 256 256)"/>
+
+  <!-- Center hub (ring) -->
+  <circle cx="256" cy="256" r="60" fill="white"/>
+  <circle cx="256" cy="256" r="28" fill="black"/>
+</svg>

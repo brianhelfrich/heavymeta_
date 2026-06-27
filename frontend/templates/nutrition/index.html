@@ -1,0 +1,123 @@
+<!-- heavymetal/frontend/templates/nutrition/index.html -->
+{# heavymetal/frontend/templates/nutrition/index.html #}
+{% extends "base.html" %}
+{% import "_cards.html" as ui %}
+{% block title %}Nutrition — Heavy Metal{% endblock %}
+
+{% block content %}
+
+{# ---- Page header ---- #}
+<div class="mb-8">
+  <h1 class="text-2xl font-bold tracking-tight">Nutrition</h1>
+  <p class="text-sm mt-0.5" style="color:rgba(255,255,255,.35)">
+    Protein &amp; macros — trends vs your personal baseline
+  </p>
+</div>
+
+{# ---- Macro cards ---- #}
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+  {{ ui.recovery_card('Protein', cards.protein, 'g', '#f472b6', 'protein') }}
+  {{ ui.recovery_card('Calories', cards.dietary_energy, 'kcal', '#fb923c', 'dietary_energy') }}
+  {{ ui.recovery_card('Carbs', cards.carbohydrates, 'g', '#38bdf8', 'carbohydrates') }}
+  {{ ui.recovery_card('Fat', cards.total_fat, 'g', '#fbbf24', 'total_fat') }}
+</div>
+
+{# ---- Trend charts ---- #}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <div class="hm-card p-5">
+    <div class="flex items-center justify-between mb-4">
+      <p class="text-sm font-semibold">Protein</p>
+      <p class="text-xs" style="color:rgba(255,255,255,.3)">60 days · target {{ targets.protein_g|int }}g</p>
+    </div>
+    <div style="position:relative;height:180px"><canvas id="proteinTrend"></canvas></div>
+  </div>
+  <div class="hm-card p-5">
+    <div class="flex items-center justify-between mb-4">
+      <p class="text-sm font-semibold">Calories</p>
+      <p class="text-xs" style="color:rgba(255,255,255,.3)">60 days</p>
+    </div>
+    <div style="position:relative;height:180px"><canvas id="caloriesTrend"></canvas></div>
+  </div>
+  <div class="hm-card p-5">
+    <div class="flex items-center justify-between mb-4">
+      <p class="text-sm font-semibold">Carbs</p>
+      <p class="text-xs" style="color:rgba(255,255,255,.3)">60 days</p>
+    </div>
+    <div style="position:relative;height:180px"><canvas id="carbsTrend"></canvas></div>
+  </div>
+  <div class="hm-card p-5">
+    <div class="flex items-center justify-between mb-4">
+      <p class="text-sm font-semibold">Fat</p>
+      <p class="text-xs" style="color:rgba(255,255,255,.3)">60 days</p>
+    </div>
+    <div style="position:relative;height:180px"><canvas id="fatTrend"></canvas></div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chart.umd.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chartjs-adapter-date-fns.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/chartjs-plugin-annotation.min.js') }}"></script>
+<script nonce="{{ csp_nonce }}">window.__chartsData = {{ charts_data|safe }};</script>
+<script nonce="{{ csp_nonce }}">
+(function () {
+  const data = window.__chartsData || {};
+  const annPlugin = window['chartjs-plugin-annotation'];
+  if (annPlugin) Chart.register(annPlugin);
+
+  Chart.defaults.font.family = 'inherit';
+  Chart.defaults.color = 'rgba(255,255,255,.35)';
+  Chart.defaults.maintainAspectRatio = false;
+  Chart.defaults.animation = false;
+  Chart.defaults.plugins.legend.display = false;
+  Object.assign(Chart.defaults.plugins.tooltip, {
+    backgroundColor: '#27272a', borderColor: 'rgba(255,255,255,.10)',
+    borderWidth: 1, padding: 10, displayColors: false,
+  });
+
+  const GRID = 'rgba(255,255,255,.06)';
+  const TICK = { color: 'rgba(255,255,255,.35)', font: { size: 11 } };
+  const timeX = { type: 'time', offset: true, time: { tooltipFormat: 'MMM d, yyyy' },
+    grid: { display: false }, border: { display: false }, ticks: { ...TICK, maxRotation: 0 } };
+  const yGrid = (extra) => Object.assign(
+    { grid: { color: GRID }, border: { display: false }, ticks: { ...TICK } }, extra || {});
+
+  function rgba(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+  }
+  const targetLine = (y, hex, text) => ({
+    type: 'line', yMin: y, yMax: y, borderColor: rgba(hex, 0.5),
+    borderWidth: 1, borderDash: [4, 4],
+    label: { display: true, content: text, position: 'end',
+             color: rgba(hex, 0.7), backgroundColor: 'rgba(0,0,0,0)', font: { size: 10 } },
+  });
+
+  function macroBar(id, key, color, unit, annotations) {
+    const el = document.getElementById(id);
+    if (!el || !data[key + '_dates'] || !data[key + '_dates'].length) return;
+    new Chart(el, {
+      type: 'bar',
+      data: { datasets: [{ label: key,
+        data: data[key + '_dates'].map((d, i) => ({ x: d, y: data[key + '_values'][i] })),
+        backgroundColor: color, borderRadius: 2 }] },
+      options: {
+        scales: { x: timeX, y: yGrid({ beginAtZero: true }) },
+        plugins: {
+          tooltip: { callbacks: { label: (c) => ' ' + Math.round(c.parsed.y) + ' ' + unit } },
+          annotation: annotations ? { annotations } : {},
+        },
+      },
+    });
+  }
+
+  macroBar('proteinTrend', 'protein', '#f472b6', 'g', {
+    target: targetLine(data.target_protein, '#f87171', Math.round(data.target_protein) + 'g') });
+  macroBar('caloriesTrend', 'dietary_energy', '#fb923c', 'kcal');
+  macroBar('carbsTrend', 'carbohydrates', '#38bdf8', 'g');
+  macroBar('fatTrend', 'total_fat', '#fbbf24', 'g');
+})();
+</script>
+{% endblock %}

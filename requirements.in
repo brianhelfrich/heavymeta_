@@ -1,0 +1,62 @@
+# /heavymetal/requirements.in
+#
+# Human-maintained input for pip-tools (pip-compile).
+# Run `pip-compile -o requirements.txt requirements.in` to generate a fully pinned lockfile.
+#
+# Guiding principles:
+# - Use `~=` to allow minor/patch upgrades within the same stable line
+# - Keep only top-level direct dependencies here
+# - Transitive deps (like greenlet, SQLAlchemy’s async stack) are resolved automatically
+# - Do not edit requirements.txt directly
+
+############################
+# Core framework
+############################
+Flask~=3.1          # Web framework
+Werkzeug~=3.1       # WSGI toolkit, Flask dependency
+Jinja2~=3.1         # Template engine, Flask dependency
+itsdangerous~=2.2   # Security helpers, Flask dependency
+click~=8.2          # CLI commands, Flask dependency
+blinker~=1.9        # Signals, Flask optional but useful
+
+############################
+# Database
+############################
+SQLAlchemy~=2.0             # ORM core
+Flask-SQLAlchemy~=3.1       # Flask integration
+Flask-Migrate~=4.0          # Alembic integration for Flask (db migrate/upgrade CLI)
+alembic~=1.16               # DB migrations
+psycopg[binary]~=3.2        # PostgreSQL driver (binary wheel build)
+Mako~=1.3                   # Template engine for Alembic
+MarkupSafe~=3.0             # Safe string escaping (Jinja2 dep)
+
+############################
+# Environment / Settings
+############################
+python-dotenv~=1.1   # Load environment variables from .env
+
+############################
+# Typing support
+############################
+typing_extensions~=4.15  # Backports of new typing features
+
+############################
+# Build / Tooling
+############################
+pip-tools~=7.5       # pip-compile / pip-sync
+build~=1.3           # PEP 517 builds
+setuptools~=80.9     # Build backend
+wheel~=0.45          # Wheel builder
+packaging~=26.0      # Version parsing, used by setuptools/build
+pyproject_hooks~=1.2 # Isolated build backend hooks
+watchdog~=6.0        # deploy: file-watch auto-reload (heavymetal-watch.service)
+
+############################
+# Testing
+############################
+pytest~=9.1          # test runner (gate suite under tests/)
+
+# Notes:
+# - We intentionally omit direct pins for pip/setuptools/wheel in the lockfile unless needed.
+# - To upgrade everything within allowed ranges, run:
+#     pip-compile --upgrade -o requirements.txt requirements.in
