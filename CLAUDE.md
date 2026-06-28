@@ -1,4 +1,4 @@
-# Heavy Metal — Claude Code context
+# heavymeta| — Claude Code context
 
 Personal fitness tracking web app. Single-user (Brian Helfrich, user_id=1). No auth.
 

@@ -1,7 +1,7 @@
 <!-- heavymetal/frontend/templates/metrics/detail.html -->
 {# heavymetal/frontend/templates/metrics/detail.html #}
 {% extends "base.html" %}
-{% block title %}{{ cfg.label }} — Heavy Metal{% endblock %}
+{% block title %}{{ cfg.label }} — heavymeta|{% endblock %}
 
 {% macro fmt(v) %}{% if v is none %}—{% else %}{{ "{:,.{}f}".format(v, cfg.decimals) }}{% endif %}{% endmacro %}
 {% macro delta(v) %}{% if v is none %}<span style="color:rgba(255,255,255,.25)">—</span>{% else %}<span style="color:{{ 'rgba(255,255,255,.45)' if v == 0 else ('#6ee7b7' if v > 0 else '#fca5a5') }}">{% if v > 0 %}+{% endif %}{{ "{:,.{}f}".format(v, cfg.decimals) }}</span>{% endif %}{% endmacro %}

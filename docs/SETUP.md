@@ -1,4 +1,4 @@
-# Heavy Metal — setup & developer guide
+# heavymeta| — setup & developer guide
 
 Full local setup, project layout, schema, testing, and dependency workflow.
 For the project overview see the [README](../README.md); for the always-on

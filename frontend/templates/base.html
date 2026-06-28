@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>{% block title %}Heavy Metal{% endblock %}</title>
+  <title>{% block title %}heavymeta|{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}" />
   <style>
@@ -79,7 +79,7 @@
   <!-- Mobile top bar -->
   <header id="hm-mobile-header" class="sticky top-0 z-50 items-center justify-between px-4 h-12
                  backdrop-blur border-b border-white/[0.06]" style="background:#09090b">
-    <span class="text-sm font-bold tracking-tight">Heavy Metal</span>
+    <span class="text-sm font-bold tracking-tight">heavymeta<span style="color:#0a84ff">&#124;</span></span>
   </header>
 
   <div class="flex">
@@ -87,7 +87,7 @@
     <!-- Sidebar -->
     <aside id="hm-sidebar" class="flex-col w-56 shrink-0 border-r border-white/[0.06] sticky top-0 h-screen" style="background:#09090b">
       <div class="px-5 pt-7 pb-5">
-        <p class="text-sm font-bold tracking-tight">Heavy Metal</p>
+        <p class="text-sm font-bold tracking-tight">heavymeta<span style="color:#0a84ff">&#124;</span></p>
         {% if owner_name %}<p class="text-xs mt-0.5" style="color:rgba(255,255,255,.28)">{{ owner_name }}</p>{% endif %}
       </div>
 
@@ -155,7 +155,7 @@
       </nav>
 
       <div class="px-5 pb-6">
-        <p class="text-[11px]" style="color:rgba(255,255,255,.18)">© {{ current_year }} Heavy Metal</p>
+        <p class="text-[11px]" style="color:rgba(255,255,255,.18)">© {{ current_year }} heavymeta</p>
       </div>
     </aside>
 

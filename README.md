@@ -1,4 +1,4 @@
-# <img src="frontend/static/apple-touch-icon.png" alt="" height="30" align="top"> heavymeta|
+# <img src="frontend/static/apple-touch-icon.png" alt="" height="30" align="top"> <picture><source media="(prefers-color-scheme: dark)" srcset="docs/brand/wordmark-dark.svg"><img alt="heavymeta|" src="docs/brand/wordmark-light.svg" height="28" align="top"></picture>
 
 [![CI](https://github.com/brianhelfrich/heavymeta_/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/brianhelfrich/heavymeta_/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)

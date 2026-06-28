@@ -1,6 +1,6 @@
-# Deployment — running Heavy Metal as an always-on service
+# Deployment — running heavymeta| as an always-on service
 
-Heavy Metal runs as a **systemd user service** on the Fedora host, serving HTTPS
+heavymeta| runs as a **systemd user service** on the Fedora host, serving HTTPS
 on port 5000 to the local network (phone, laptop on the same Wi-Fi).
 
 ## How it runs

@@ -1,6 +1,6 @@
 # Design notes
 
-Why Heavy Metal is built the way it is — the non-obvious decisions behind its two
+Why heavymeta| is built the way it is — the non-obvious decisions behind its two
 goals: **getting data in reliably** and **shipping changes safely**. The overview
 diagrams live in the [README](../README.md#architecture); this page is the detail and
 the rationale.
